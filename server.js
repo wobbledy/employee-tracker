@@ -78,3 +78,15 @@ function viewDepartments() {
   });
 };
 
+// Need to join the department and role tables for the SQL Query
+function viewRoles() {
+  const sql = `SELECT r.id, r.title, d.name AS department, r.salary FROM role r JOIN department d ON r.department_id = d.id`;
+  db.query(sql, (err, res) => {
+    if (err) {
+      res.status(400).json({ error: err.message});
+      return;
+    }
+    console.table(res);
+    init();
+  });
+};
