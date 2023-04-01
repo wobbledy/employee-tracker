@@ -23,6 +23,7 @@ db.connect(err => {
   init();
 });
 
+// Prompts for Inquirer
 const questions = [
   {
     name: 'questions',
@@ -40,6 +41,7 @@ const questions = [
   }
 ];
 
+// Starts the prompts and calls a function based on the selection
 function init() {
   inquirer
     .prompt(questions)
@@ -64,5 +66,15 @@ function init() {
     });
 };
 
-
+function viewDepartments() {
+  const sql = `SELECT * FROM department`;
+  db.query(sql, (err, res) => {
+    if (err) {
+      res.status(400).json({ error: err.message});
+      return;
+    }
+    console.table(res);
+    init();
+  });
+};
 
