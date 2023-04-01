@@ -1,28 +1,68 @@
-const express = require('express');
-// Import and require mysql2
+// Imports required modules
 const mysql = require('mysql2');
+const inquirer = require('inquirer');
+const consoleTable = require('console.table');
 
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 // Connect to database
 const db = mysql.createConnection(
   {
     host: 'localhost',
-    // MySQL username,
     user: 'root',
-    // TODO: Add MySQL password here
     password: 'whitesox',
-    database: 'movies_db'
+    database: 'company_db'
   },
-  console.log(`Connected to the movies_db database.`)
+  console.log(`Connected to the company database.`)
 );
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+db.connect(err => {
+  if (err) {
+    console.log(err)
+  }
+  // CALL FUNCTION TO START INQUIRER once connected
+  init();
 });
-  
+
+const questions = [
+  {
+    name: 'questions',
+    type: 'list',
+    message: 'What would you like to do?',
+    choices: [
+      'View all departments',
+      'View all roles',
+      'View all employees',
+      'Add a department',
+      'Add a role',
+      'Add an employee',
+      'Update an employee role',
+    ],
+  }
+];
+
+function init() {
+  inquirer
+    .prompt(questions)
+    .then(response => {
+      if (response.questions === 'View all departments') {
+        viewDepartments();
+      } else if (response.questions === 'View all roles') {
+        viewRoles();
+      } else if (response.questions === 'View all employees') {
+        viewEmployees();
+      } else if (response.questions === 'Add a department') {
+        addDepartment();
+      } else if (response.questions === 'Add a role') {
+        addRole();
+      } else if (response.questions === 'Add an employee') {
+        addEmployee();
+      } else if (response.questions === 'Update an employee role') {
+        updateEmployeeRole();
+      } else {
+        db.end();
+      }
+    });
+};
+
+
+
